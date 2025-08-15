@@ -901,25 +901,24 @@
     ]
   },
   "packageFolders": {
-    "/Users/diogobarros/.nuget/packages/": {}
+    "/Users/pablorouan/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/diogobarros/diogo_ironhack/example-voting-app/worker/Worker.csproj",
+      "projectUniqueName": "/Users/pablorouan/Desktop/project1/ironhack-project-1/worker/Worker.csproj",
       "projectName": "Worker",
-      "projectPath": "/Users/diogobarros/diogo_ironhack/example-voting-app/worker/Worker.csproj",
-      "packagesPath": "/Users/diogobarros/.nuget/packages/",
-      "outputPath": "/Users/diogobarros/diogo_ironhack/example-voting-app/worker/obj/",
+      "projectPath": "/Users/pablorouan/Desktop/project1/ironhack-project-1/worker/Worker.csproj",
+      "packagesPath": "/Users/pablorouan/.nuget/packages/",
+      "outputPath": "/Users/pablorouan/Desktop/project1/ironhack-project-1/worker/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/diogobarros/.nuget/NuGet/NuGet.Config"
+        "/Users/pablorouan/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "/usr/local/share/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -972,7 +971,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
