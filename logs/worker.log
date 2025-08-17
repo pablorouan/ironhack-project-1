@@ -1,0 +1,8 @@
+Database connection string: Server=localhost;Username=postgres;Password=postgres;Database=postgres
+Connected to db
+Found redis at 127.0.0.1
+Connecting to redis
+Database connection string: Server=localhost;Username=postgres;Password=postgres;Database=postgres
+Connected to db
+Found redis at 127.0.0.1
+Connecting to redis

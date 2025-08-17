@@ -1,0 +1,107 @@
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.177:8080
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 104-123-284
+127.0.0.1 - - [17/Aug/2025 12:28:44] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:28:44] "GET /static/stylesheets/style.css HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:28:44] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+[2025-08-17 12:28:46,627] INFO in app: Received vote for a
+127.0.0.1 - - [17/Aug/2025 12:28:46] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:28:46] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+[2025-08-17 12:28:50,011] INFO in app: Received vote for b
+127.0.0.1 - - [17/Aug/2025 12:28:50] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:28:50] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+[2025-08-17 12:29:14,494] INFO in app: Received vote for a
+127.0.0.1 - - [17/Aug/2025 12:29:14] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:29:14] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+[2025-08-17 12:29:18,562] INFO in app: Received vote for b
+127.0.0.1 - - [17/Aug/2025 12:29:18] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:29:18] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.177:8080
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 104-123-284
+[2025-08-17 12:32:36,329] INFO in app: Received vote for b
+127.0.0.1 - - [17/Aug/2025 12:32:36] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:32:36] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+[2025-08-17 12:32:41,673] INFO in app: Received vote for a
+127.0.0.1 - - [17/Aug/2025 12:32:41] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:32:41] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+[2025-08-17 12:32:44,943] INFO in app: Received vote for b
+127.0.0.1 - - [17/Aug/2025 12:32:44] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:32:44] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.177:8080
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 104-123-284
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.177:8080
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 104-123-284
+[2025-08-17 12:56:41,738] INFO in app: Received vote for b
+127.0.0.1 - - [17/Aug/2025 12:56:41] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:56:41] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+[2025-08-17 12:56:46,865] INFO in app: Received vote for a
+127.0.0.1 - - [17/Aug/2025 12:56:46] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 12:56:46] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.177:8080
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 104-123-284
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://192.168.0.177:8080
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 104-123-284
+127.0.0.1 - - [17/Aug/2025 13:07:25] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 13:07:25] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+[2025-08-17 13:07:28,989] INFO in app: Received vote for a
+127.0.0.1 - - [17/Aug/2025 13:07:28] "POST / HTTP/1.1" 200 -
+127.0.0.1 - - [17/Aug/2025 13:07:29] "[36mGET /static/stylesheets/style.css HTTP/1.1[0m" 304 -
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/resource_tracker.py:216: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
