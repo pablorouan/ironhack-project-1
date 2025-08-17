@@ -1,10 +1,10 @@
-# Ironhack note - This file is for running in docker compose with prebuilt images
-# Use these if you're stuck, or if you want to start slowly migrating from external images into your own.
+# Updated docker-compose.yml with own images
+# Replace with own DockerHub username
 
 services:
   vote:
-    image: pokfinner/vote:latest
- #  build: ./vote
+    image: prouan/vote:latest
+    # build: ./vote  # You can keep this commented as backup
     depends_on:
       redis:
         condition: service_healthy 
@@ -12,10 +12,12 @@ services:
       - "8080:80"
     networks:
       - back-tier
+    environment:
+      - REDIS_HOST=redis  # Points to the redis service name
 
   result:
-    image: pokfinner/result:latest
- #  build: ./result
+    image: prouan/result:latest
+    # build: ./result  # You can keep this commented as backup
     depends_on:
       db:
         condition: service_healthy 
@@ -23,10 +25,12 @@ services:
       - "8081:80"
     networks:
       - back-tier
+    environment:
+      - PG_HOST=db  # Points to the postgres service name
 
   worker:
- #  build: ./worker
-    image: pokfinner/worker:latest
+    image: prouan/worker:latest
+    # build: ./worker  # You can keep this commented as backup
     depends_on:
       redis:
         condition: service_healthy 
@@ -34,6 +38,9 @@ services:
         condition: service_healthy 
     networks:
       - back-tier
+    environment:
+      - REDIS_HOST=redis  # Points to the redis service name
+      - DB_HOST=db       # Points to the postgres service name
 
   redis:
     image: redis:alpine
