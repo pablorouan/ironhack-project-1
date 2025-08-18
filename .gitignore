@@ -1,0 +1,39 @@
+#local
+localrun/.
+
+# Dependencies
+node_modules/
+*.pyc
+
+# Environment files
+.env
+*.env
+
+# Build outputs
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Terraform - Exclude heavy generated files
+.terraform/                    # Provider binaries & modules (HEAVY)
+*.tfstate                      # State files (can be large)
+*.tfstate.*                    # State backups
+*.tfstate.backup              # State backups
+.terraform.lock.hcl           # Lock file (dependencies)
+
+# Terraform - Exclude sensitive files  
+*.tfvars                      # Variable files (often contain secrets)
+terraform.tfvars              # Main variables file
+*.auto.tfvars                 # Auto-loaded variables
+
+# Terraform - Exclude temporary files
+*.tfplan                      # Plan output files
+.terraformrc                  # RC files
+terraform.rc                  # RC files
