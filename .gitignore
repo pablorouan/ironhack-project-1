@@ -1,2 +1,28 @@
-/localrun/.
-/terraform/backend_setup
+#local
+localrun/.
+
+# Dependencies
+node_modules/
+*.pyc
+
+# Environment files
+.env
+*.env
+
+# Build outputs
+dist/
+build/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfvars
+terraform/backend_setup
