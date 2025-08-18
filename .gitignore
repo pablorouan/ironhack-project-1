@@ -1,13 +1,19 @@
 # ==========================
-# Local
+# Local development files
 # ==========================
 localrun/
 
 # ==========================
-# Dependencies
+# Node.js / JavaScript
 # ==========================
 node_modules/
+
+# ==========================
+# Python
+# ==========================
 *.pyc
+__pycache__/
+venv/
 
 # ==========================
 # Environment files
@@ -22,37 +28,36 @@ dist/
 build/
 
 # ==========================
-# IDE files
+# IDE / Editor
 # ==========================
 .vscode/
 .idea/
 
 # ==========================
-# OS files
+# OS / System
 # ==========================
 .DS_Store
 Thumbs.db
 
 # ==========================
-# Terraform - generated files (ignore everywhere)
+# Terraform
 # ==========================
-# Terraform - Exclude generated files anywhere
-**/.terraform/              # Provider binaries & modules
-**/.terraform.lock.hcl      # Lock file (dependencies)
-**/*.tfstate                # State files
-**/*.tfstate.*              # State backups
+# Ignore .terraform directories recursively
+terraform/**/.terraform/
 
-# Sensitive vars (never commit real ones)
-*.tfvars
-terraform.tfvars
-*.auto.tfvars
+# Ignore state files
+terraform/**/*.tfstate*
+terraform/**/*.tfstate.backup
 
-# Terraform CLI configs
-.terraformrc
-terraform.rc
+# Ignore variable files (often contain secrets)
+terraform/**/*.tfvars
+terraform/**/terraform.tfvars
+terraform/**/*.auto.tfvars
 
-/Users/pablorouan/Desktop/project1/ironhack-project-1/terraform/backend_setup/.terraform/providers/registry.terraform.io/hashicorp/aws/5.100.0/darwin_arm64/LICENSE.txt
-/Users/pablorouan/Desktop/project1/ironhack-project-1/terraform/backend_setup/.terraform/providers/registry.terraform.io/hashicorp/aws/5.100.0/darwin_arm64/terraform-provider-aws_v5.100.0_x5
-/Users/pablorouan/Desktop/project1/ironhack-project-1/terraform/backend_setup/.terraform.lock.hcl
-/Users/pablorouan/Desktop/project1/ironhack-project-1/terraform/backend_setup/terraform.tfstate
-/Users/pablorouan/Desktop/project1/ironhack-project-1/terraform/backend_setup/terraform.tfstate.backup
+# Ignore lock files
+terraform/**/.terraform.lock.hcl
+
+# Ignore plan output and RC files
+terraform/**/*.tfplan
+terraform/**/.terraformrc
+terraform/**/terraform.rc
