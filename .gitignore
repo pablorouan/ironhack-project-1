@@ -36,11 +36,11 @@ Thumbs.db
 # ==========================
 # Terraform - generated files (ignore everywhere)
 # ==========================
+# Terraform - Exclude generated files anywhere
 **/.terraform/              # Provider binaries & modules
 **/.terraform.lock.hcl      # Lock file (dependencies)
-*.tfstate                   # State files
-*.tfstate.*                 # State backups
-*.tfstate.backup            # State backups
+**/*.tfstate                # State files
+**/*.tfstate.*              # State backups
 
 # Sensitive vars (never commit real ones)
 *.tfvars
