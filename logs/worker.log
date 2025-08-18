@@ -6,3 +6,12 @@ Database connection string: Server=localhost;Username=postgres;Password=postgres
 Connected to db
 Found redis at 127.0.0.1
 Connecting to redis
+/Users/pablorouan/Desktop/project1/ironhack-project-1/worker/Program.cs(55,35): warning CS8600: Converting null literal or possible null value to non-nullable type. [/Users/pablorouan/Desktop/project1/ironhack-project-1/worker/Worker.csproj]
+/Users/pablorouan/Desktop/project1/ironhack-project-1/worker/Program.cs(59,67): warning CS8602: Dereference of a possibly null reference. [/Users/pablorouan/Desktop/project1/ironhack-project-1/worker/Worker.csproj]
+Database connection string: Server=localhost;Username=postgres;Password=postgres;Database=postgres
+Connected to db
+Found redis at 127.0.0.1
+Connecting to redis
+Processing vote for 'b' by '7c7c3b71d424945'
+Processing vote for 'a' by '7c7c3b71d424945'
+Processing vote for 'b' by '7c7c3b71d424945'

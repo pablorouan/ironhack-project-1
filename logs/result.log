@@ -22,3 +22,8 @@ postgresql://postgres:postgres@localhost:5432/postgres
 App running on port 8081
 Connected to db
 Connected on root namespace
+postgresql://postgres:postgres@localhost:5432/postgres
+App running on port 8081
+Connected to db
+Connected on root namespace
+Connected on root namespace
