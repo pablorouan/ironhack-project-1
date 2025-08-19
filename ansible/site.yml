@@ -1,20 +1,35 @@
 ---
-- name: Deploy Voting App Infrastructure
+# 1) Bootstrap: asegurar que dnf y Python bindings estén listos en AL2023
+- name: Bootstrap Amazon Linux 2023 package manager
+  hosts: all
+  become: yes
+  gather_facts: false
+
+  tasks:
+    - name: Ensure python3-dnf bindings present
+      raw: sudo dnf install -y python3-dnf
+
+# 2) Infra base en hosts privados: actualizar, instalar Docker y docker-compose
+- name: Deploy Voting App base (Docker runtime)
   hosts: private
   become: yes
   gather_facts: yes
-  
+
   tasks:
     - name: Update system packages
-      yum:
+      dnf:
         name: '*'
         state: latest
         update_cache: yes
+        use_backend: dnf4
 
-    - name: Install Docker
-      yum:
-        name: docker
+    - name: Install required packages (docker, nmap-ncat)
+      dnf:
+        name:
+          - docker
+          - nmap-ncat
         state: present
+        use_backend: dnf4
 
     - name: Start and enable Docker service
       systemd:
@@ -28,30 +43,41 @@
         groups: docker
         append: yes
 
-    - name: Install Docker Compose
+    - name: Install Docker Compose v2
       get_url:
         url: "https://github.com/docker/compose/releases/download/v2.21.0/docker-compose-linux-x86_64"
         dest: /usr/local/bin/docker-compose
         mode: '0755'
 
-    - name: Create symbolic link for docker-compose
+    - name: Symlink docker-compose into PATH
       file:
         src: /usr/local/bin/docker-compose
         dest: /usr/bin/docker-compose
         state: link
 
+# 3) Database
 - name: Deploy Database Services
   hosts: database
   become: yes
-  
+  gather_facts: yes
+
+  vars:
+    pg_user: postgres
+    pg_password: postgres
+    pg_db: postgres
+
   tasks:
+    - name: Create Docker volume for Postgres
+      community.docker.docker_volume:
+        name: postgres_data
+
     - name: Pull PostgreSQL image
-      docker_image:
+      community.docker.docker_image:
         name: postgres:15
         source: pull
 
     - name: Run PostgreSQL container
-      docker_container:
+      community.docker.docker_container:
         name: postgres
         image: postgres:15
         state: started
@@ -59,24 +85,29 @@
         ports:
           - "5432:5432"
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
+          POSTGRES_USER: "{{ pg_user }}"
+          POSTGRES_PASSWORD: "{{ pg_password }}"
+          POSTGRES_DB: "{{ pg_db }}"
         volumes:
           - postgres_data:/var/lib/postgresql/data
 
+# 4) Backend (Redis + Worker)
 - name: Deploy Backend Services (Redis + Worker)
   hosts: backend
   become: yes
-  
+  gather_facts: yes
+
+  vars:
+    db_host: "{{ hostvars['database-host'].ansible_host }}"
+
   tasks:
     - name: Pull Redis image
-      docker_image:
+      community.docker.docker_image:
         name: redis:latest
         source: pull
 
     - name: Run Redis container
-      docker_container:
+      community.docker.docker_container:
         name: redis
         image: redis:latest
         state: started
@@ -84,38 +115,44 @@
         ports:
           - "6379:6379"
 
-    - name: Pull Worker image (replace with your DockerHub username)
-      docker_image:
+    - name: Pull Worker image
+      community.docker.docker_image:
         name: prouan/worker:latest
         source: pull
 
     - name: Run Worker container
-      docker_container:
+      community.docker.docker_container:
         name: worker
         image: prouan/worker:latest
         state: started
         restart_policy: always
         env:
-          REDIS_HOST: "{{ ansible_default_ipv4.address }}"
-          DB_HOST: "10.0.3.108"
+          REDIS_HOST: "{{ hostvars['backend-host'].ansible_host }}"
+          DB_HOST: "{{ db_host }}"
 
+# 5) Frontend (vote + result)
 - name: Deploy Frontend Services
   hosts: frontend
   become: yes
-  
+  gather_facts: yes
+
+  vars:
+    redis_host: "{{ hostvars['backend-host'].ansible_host }}"
+    pg_host: "{{ hostvars['database-host'].ansible_host }}"
+
   tasks:
-    - name: Pull Vote app image (replace with your DockerHub username)
-      docker_image:
+    - name: Pull Vote app image
+      community.docker.docker_image:
         name: prouan/vote:latest
         source: pull
 
-    - name: Pull Result app image (replace with your DockerHub username)
-      docker_image:
+    - name: Pull Result app image
+      community.docker.docker_image:
         name: prouan/result:latest
         source: pull
 
     - name: Run Vote app container
-      docker_container:
+      community.docker.docker_container:
         name: vote
         image: prouan/vote:latest
         state: started
@@ -123,10 +160,10 @@
         ports:
           - "8080:80"
         env:
-          REDIS_HOST: "10.0.2.131"
+          REDIS_HOST: "{{ redis_host }}"
 
     - name: Run Result app container
-      docker_container:
+      community.docker.docker_container:
         name: result
         image: prouan/result:latest
         state: started
@@ -134,4 +171,4 @@
         ports:
           - "8081:80"
         env:
-          PG_HOST: "10.0.3.108"
+          PG_HOST: "{{ pg_host }}"

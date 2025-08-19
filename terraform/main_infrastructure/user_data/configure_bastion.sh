@@ -1,19 +1,17 @@
 #!/bin/bash
 
-# user_data/configure_bastion.sh - Configure Bastion Host
-
 # Update system packages
-yum update -y
+dnf update -y
 
 # Install useful tools for bastion host
-yum install -y git htop telnet nc tree vim
+dnf install -y git htop telnet nc tree vim
 
 # Set hostname
 hostnamectl set-hostname ${hostname}
 
-# Install Ansible (for Part 5)
-amazon-linux-extras install epel -y
-yum install -y ansible
+# Install Ansible (via EPEL)
+dnf install -y epel-release
+dnf install -y ansible
 
 # Configure SSH for jump host functionality
 cat >> /home/ec2-user/.ssh/config << 'EOF'
