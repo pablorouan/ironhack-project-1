@@ -1,0 +1,137 @@
+---
+- name: Deploy Voting App Infrastructure
+  hosts: private
+  become: yes
+  gather_facts: yes
+  
+  tasks:
+    - name: Update system packages
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add ec2-user to docker group
+      user:
+        name: ec2-user
+        groups: docker
+        append: yes
+
+    - name: Install Docker Compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/v2.21.0/docker-compose-linux-x86_64"
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: Create symbolic link for docker-compose
+      file:
+        src: /usr/local/bin/docker-compose
+        dest: /usr/bin/docker-compose
+        state: link
+
+- name: Deploy Database Services
+  hosts: database
+  become: yes
+  
+  tasks:
+    - name: Pull PostgreSQL image
+      docker_image:
+        name: postgres:15
+        source: pull
+
+    - name: Run PostgreSQL container
+      docker_container:
+        name: postgres
+        image: postgres:15
+        state: started
+        restart_policy: always
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
+
+- name: Deploy Backend Services (Redis + Worker)
+  hosts: backend
+  become: yes
+  
+  tasks:
+    - name: Pull Redis image
+      docker_image:
+        name: redis:latest
+        source: pull
+
+    - name: Run Redis container
+      docker_container:
+        name: redis
+        image: redis:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "6379:6379"
+
+    - name: Pull Worker image (replace with your DockerHub username)
+      docker_image:
+        name: prouan/worker:latest
+        source: pull
+
+    - name: Run Worker container
+      docker_container:
+        name: worker
+        image: prouan/worker:latest
+        state: started
+        restart_policy: always
+        env:
+          REDIS_HOST: "{{ ansible_default_ipv4.address }}"
+          DB_HOST: "10.0.3.108"
+
+- name: Deploy Frontend Services
+  hosts: frontend
+  become: yes
+  
+  tasks:
+    - name: Pull Vote app image (replace with your DockerHub username)
+      docker_image:
+        name: prouan/vote:latest
+        source: pull
+
+    - name: Pull Result app image (replace with your DockerHub username)
+      docker_image:
+        name: prouan/result:latest
+        source: pull
+
+    - name: Run Vote app container
+      docker_container:
+        name: vote
+        image: prouan/vote:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "8080:80"
+        env:
+          REDIS_HOST: "10.0.2.131"
+
+    - name: Run Result app container
+      docker_container:
+        name: result
+        image: prouan/result:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "8081:80"
+        env:
+          PG_HOST: "10.0.3.108"
