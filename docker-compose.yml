@@ -1,5 +1,5 @@
 # Updated docker-compose.yml with own images
-# Replace with own DockerHub username
+# Replaced with own DockerHub username
 
 services:
   vote:
