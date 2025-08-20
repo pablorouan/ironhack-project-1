@@ -1,12 +1,10 @@
 #!/bin/bash
 
-# user_data/install_docker.sh - Install Docker on Amazon Linux 2
-
 # Update system packages
-yum update -y
+dnf update -y
 
 # Install Docker
-yum install -y docker
+dnf install -y docker
 
 # Start Docker service
 systemctl start docker
@@ -26,7 +24,7 @@ ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 hostnamectl set-hostname ${hostname}
 
 # Install useful tools
-yum install -y git htop telnet nc
+dnf install -y git htop telnet nc
 
 # Create a directory for the voting app
 mkdir -p /home/ec2-user/voting-app

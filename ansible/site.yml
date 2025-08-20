@@ -1,5 +1,7 @@
 ---
-# 1) Bootstrap: asegurar que dnf y Python bindings estén listos en AL2023
+# site.yml - Main deployment playbook for Voting App
+
+# 1) Bootstrap: Ensure Python bindings are ready on AL2023
 - name: Bootstrap Amazon Linux 2023 package manager
   hosts: all
   become: yes
@@ -7,10 +9,15 @@
 
   tasks:
     - name: Ensure python3-dnf bindings present
-      raw: sudo dnf install -y python3-dnf
+      raw: sudo dnf install -y python3-dnf python3-pip
+      changed_when: false
 
-# 2) Infra base en hosts privados: actualizar, instalar Docker y docker-compose
-- name: Deploy Voting App base (Docker runtime)
+    - name: Wait for system to be ready
+      wait_for_connection:
+        timeout: 60
+
+# 2) Base infrastructure on private hosts: update, install Docker
+- name: Deploy Voting App base infrastructure
   hosts: private
   become: yes
   gather_facts: yes
@@ -23,11 +30,13 @@
         update_cache: yes
         use_backend: dnf4
 
-    - name: Install required packages (docker, nmap-ncat)
+    - name: Install required packages
       dnf:
         name:
           - docker
           - nmap-ncat
+          - git
+          - htop
         state: present
         use_backend: dnf4
 
@@ -48,14 +57,35 @@
         url: "https://github.com/docker/compose/releases/download/v2.21.0/docker-compose-linux-x86_64"
         dest: /usr/local/bin/docker-compose
         mode: '0755'
+        owner: root
+        group: root
 
-    - name: Symlink docker-compose into PATH
+    - name: Create symlink for docker-compose
       file:
         src: /usr/local/bin/docker-compose
         dest: /usr/bin/docker-compose
         state: link
 
-# 3) Database
+    - name: Install Python Docker module for Ansible (using dnf)
+      dnf:
+        name:
+          - python3-pip
+          - python3-docker
+        state: present
+        use_backend: dnf4
+      ignore_errors: yes
+
+    - name: Install Docker Python module via pip (fallback)
+      pip:
+        name: docker
+        state: present
+        break_system_packages: yes
+      ignore_errors: yes
+
+    - name: Reset ssh connection to allow user changes to affect ansible user
+      meta: reset_connection
+
+# 3) Database tier
 - name: Deploy Database Services
   hosts: database
   become: yes
@@ -67,7 +97,7 @@
     pg_db: postgres
 
   tasks:
-    - name: Create Docker volume for Postgres
+    - name: Create Docker volume for PostgreSQL data
       community.docker.docker_volume:
         name: postgres_data
 
@@ -75,6 +105,11 @@
       community.docker.docker_image:
         name: postgres:15
         source: pull
+
+    - name: Stop existing PostgreSQL container (if any)
+      community.docker.docker_container:
+        name: postgres
+        state: absent
 
     - name: Run PostgreSQL container
       community.docker.docker_container:
@@ -90,21 +125,38 @@
           POSTGRES_DB: "{{ pg_db }}"
         volumes:
           - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U {{ pg_user }}"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
 
-# 4) Backend (Redis + Worker)
-- name: Deploy Backend Services (Redis + Worker)
+    - name: Wait for PostgreSQL to be ready
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: 5432
+        timeout: 60
+
+# 4) Backend tier (Redis + Worker)
+- name: Deploy Backend Services
   hosts: backend
   become: yes
   gather_facts: yes
 
   vars:
-    db_host: "{{ hostvars['database-host'].ansible_host }}"
+    db_host: "{{ hostvars['database-host']['ansible_host'] }}"
+    redis_host: "{{ hostvars['backend-host']['ansible_host'] }}"
 
   tasks:
     - name: Pull Redis image
       community.docker.docker_image:
         name: redis:latest
         source: pull
+
+    - name: Stop existing Redis container (if any)
+      community.docker.docker_container:
+        name: redis
+        state: absent
 
     - name: Run Redis container
       community.docker.docker_container:
@@ -114,47 +166,97 @@
         restart_policy: always
         ports:
           - "6379:6379"
+        healthcheck:
+          test: ["CMD", "redis-cli", "ping"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+
+    - name: Wait for Redis to be ready
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: 6379
+        timeout: 60
 
     - name: Pull Worker image
       community.docker.docker_image:
         name: prouan/worker:latest
         source: pull
+      register: worker_image_result
+      failed_when: false
+
+    - name: Use fallback Worker image if custom image not found
+      community.docker.docker_image:
+        name: dockersamples/examplevotingapp_worker:latest
+        source: pull
+      when: worker_image_result.failed
+
+    - name: Stop existing Worker container (if any)
+      community.docker.docker_container:
+        name: worker
+        state: absent
 
     - name: Run Worker container
       community.docker.docker_container:
         name: worker
-        image: prouan/worker:latest
+        image: "{{ 'prouan/worker:latest' if not worker_image_result.failed else 'dockersamples/examplevotingapp_worker:latest' }}"
         state: started
         restart_policy: always
         env:
-          REDIS_HOST: "{{ hostvars['backend-host'].ansible_host }}"
+          REDIS_HOST: "{{ redis_host }}"
           DB_HOST: "{{ db_host }}"
 
-# 5) Frontend (vote + result)
+# 5) Frontend tier (Vote + Result apps)
 - name: Deploy Frontend Services
   hosts: frontend
   become: yes
   gather_facts: yes
 
   vars:
-    redis_host: "{{ hostvars['backend-host'].ansible_host }}"
-    pg_host: "{{ hostvars['database-host'].ansible_host }}"
+    redis_host: "{{ hostvars['backend-host']['ansible_host'] }}"
+    pg_host: "{{ hostvars['database-host']['ansible_host'] }}"
 
   tasks:
     - name: Pull Vote app image
       community.docker.docker_image:
         name: prouan/vote:latest
         source: pull
+      register: vote_image_result
+      failed_when: false
+
+    - name: Use fallback Vote image if custom image not found
+      community.docker.docker_image:
+        name: dockersamples/examplevotingapp_vote:latest
+        source: pull
+      when: vote_image_result.failed
 
     - name: Pull Result app image
       community.docker.docker_image:
         name: prouan/result:latest
         source: pull
+      register: result_image_result
+      failed_when: false
+
+    - name: Use fallback Result image if custom image not found
+      community.docker.docker_image:
+        name: dockersamples/examplevotingapp_result:latest
+        source: pull
+      when: result_image_result.failed
+
+    - name: Stop existing Vote container (if any)
+      community.docker.docker_container:
+        name: vote
+        state: absent
+
+    - name: Stop existing Result container (if any)
+      community.docker.docker_container:
+        name: result
+        state: absent
 
     - name: Run Vote app container
       community.docker.docker_container:
         name: vote
-        image: prouan/vote:latest
+        image: "{{ 'prouan/vote:latest' if not vote_image_result.failed else 'dockersamples/examplevotingapp_vote:latest' }}"
         state: started
         restart_policy: always
         ports:
@@ -165,7 +267,7 @@
     - name: Run Result app container
       community.docker.docker_container:
         name: result
-        image: prouan/result:latest
+        image: "{{ 'prouan/result:latest' if not result_image_result.failed else 'dockersamples/examplevotingapp_result:latest' }}"
         state: started
         restart_policy: always
         ports:

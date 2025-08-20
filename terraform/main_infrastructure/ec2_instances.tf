@@ -2,12 +2,12 @@
 
 # Use existing Key Pair
 data "aws_key_pair" "existing_key" {
-  key_name = "pablo-voting-app-key"
+  key_name = var.existing_key_name
 }
 
 # Instance A: Frontend (Vote + Result) - Public Subnet
 resource "aws_instance" "frontend" {
-  ami                         = "ami-0ae2c887094315bed"
+  ami                         = "ami-0ae2c887094315bed"  # Amazon Linux 2023 - keeping your specified AMI
   instance_type               = var.instance_type
   key_name                    = data.aws_key_pair.existing_key.key_name
   vpc_security_group_ids      = [aws_security_group.frontend_sg.id]
@@ -17,6 +17,17 @@ resource "aws_instance" "frontend" {
   user_data = base64encode(templatefile("${path.module}/user_data/install_docker.sh", {
     hostname = "frontend"
   }))
+
+  # Ensure proper root volume
+  root_block_device {
+    volume_type = "gp3"
+    volume_size = 20
+    encrypted   = true
+    
+    tags = {
+      Name = "voting-app-frontend-root"
+    }
+  }
 
   tags = {
     Name        = "voting-app-frontend"
@@ -28,7 +39,7 @@ resource "aws_instance" "frontend" {
 
 # Instance B: Backend (Redis + Worker) - Private Subnet
 resource "aws_instance" "backend" {
-  ami                    = "ami-0ae2c887094315bed"
+  ami                    = "ami-0ae2c887094315bed"  # Amazon Linux 2023 - keeping your specified AMI
   instance_type          = var.instance_type
   key_name               = data.aws_key_pair.existing_key.key_name
   vpc_security_group_ids = [aws_security_group.backend_sg.id]
@@ -37,6 +48,17 @@ resource "aws_instance" "backend" {
   user_data = base64encode(templatefile("${path.module}/user_data/install_docker.sh", {
     hostname = "backend"
   }))
+
+  # Ensure proper root volume
+  root_block_device {
+    volume_type = "gp3"
+    volume_size = 20
+    encrypted   = true
+    
+    tags = {
+      Name = "voting-app-backend-root"
+    }
+  }
 
   tags = {
     Name        = "voting-app-backend"
@@ -48,7 +70,7 @@ resource "aws_instance" "backend" {
 
 # Instance C: Database (PostgreSQL) - Private Subnet
 resource "aws_instance" "database" {
-  ami                    = "ami-0ae2c887094315bed"
+  ami                    = "ami-0ae2c887094315bed"  # Amazon Linux 2023 - keeping your specified AMI
   instance_type          = var.instance_type
   key_name               = data.aws_key_pair.existing_key.key_name
   vpc_security_group_ids = [aws_security_group.database_sg.id]
@@ -58,6 +80,17 @@ resource "aws_instance" "database" {
     hostname = "database"
   }))
 
+  # Ensure proper root volume with extra space for database
+  root_block_device {
+    volume_type = "gp3"
+    volume_size = 30  # More space for database
+    encrypted   = true
+    
+    tags = {
+      Name = "voting-app-database-root"
+    }
+  }
+
   tags = {
     Name        = "voting-app-database"
     Environment = var.environment
@@ -66,31 +99,9 @@ resource "aws_instance" "database" {
   }
 }
 
-# EBS Volume for PostgreSQL Data Persistence
-resource "aws_ebs_volume" "postgres_data" {
-  availability_zone = aws_instance.database.availability_zone
-  size             = 20
-  type             = "gp3"
-  encrypted        = true
-
-  tags = {
-    Name        = "postgres-data-volume"
-    Environment = var.environment
-    Project     = "voting-app"
-    Purpose     = "PostgreSQL Data Storage"
-  }
-}
-
-# Attach the volume to the database instance
-resource "aws_volume_attachment" "postgres_attachment" {
-  device_name = "/dev/sdf"
-  volume_id   = aws_ebs_volume.postgres_data.id
-  instance_id = aws_instance.database.id
-}
-
 # Bastion Host - Public Subnet
 resource "aws_instance" "bastion" {
-  ami                         = "ami-0ae2c887094315bed"
+  ami                         = "ami-0ae2c887094315bed"  # Amazon Linux 2023 - keeping your specified AMI
   instance_type               = var.bastion_instance_type
   key_name                    = data.aws_key_pair.existing_key.key_name
   vpc_security_group_ids      = [aws_security_group.bastion_sg.id]
@@ -100,6 +111,17 @@ resource "aws_instance" "bastion" {
   user_data = base64encode(templatefile("${path.module}/user_data/configure_bastion.sh", {
     hostname = "bastion"
   }))
+
+  # Small root volume for bastion
+  root_block_device {
+    volume_type = "gp3"
+    volume_size = 10
+    encrypted   = true
+    
+    tags = {
+      Name = "voting-app-bastion-root"
+    }
+  }
 
   tags = {
     Name        = "voting-app-bastion"

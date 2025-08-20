@@ -69,6 +69,7 @@ variable "public_key_path" {
 variable "your_ip_cidr" {
   description = "Your public IP address in CIDR notation (for SSH access to bastion)"
   type        = string
+  default     = "95.91.214.19/32"
   # You need to set this to your actual public IP, e.g., "203.0.113.12/32"
   # You can find your IP with: curl ifconfig.me
 }

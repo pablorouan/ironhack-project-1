@@ -1,14 +1,14 @@
 [bastion]
-bastion-host ansible_host=15.165.18.203 ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/pablo-voting-app-key.pem ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+bastion-host ansible_host=13.125.198.231 ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/pablo-voting-app-key.pem
 
 [frontend]
-frontend-host ansible_host=10.0.1.155 ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/pablo-voting-app-key.pem
+frontend-host ansible_host=10.0.1.139 ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/pablo-voting-app-key.pem
 
 [backend]  
-backend-host ansible_host=10.0.2.78 ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/pablo-voting-app-key.pem
+backend-host ansible_host=10.0.2.141 ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/pablo-voting-app-key.pem
 
 [database]
-database-host ansible_host=10.0.3.219 ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/pablo-voting-app-key.pem
+database-host ansible_host=10.0.3.87 ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/pablo-voting-app-key.pem
 
 [private:children]
 frontend
@@ -16,4 +16,7 @@ backend
 database
 
 [private:vars]
-ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q ec2-user@15.165.18.203 -i ~/.ssh/pablo-voting-app-key.pem -o StrictHostKeyChecking=no"'
+ansible_ssh_common_args='-o ProxyJump=ec2-user@13.125.198.231 -o StrictHostKeyChecking=no'
+
+[all:vars]
+ansible_ssh_extra_args=-o StrictHostKeyChecking=no

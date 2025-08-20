@@ -81,34 +81,74 @@ output "result_app_url" {
   value       = "http://${aws_instance.frontend.public_ip}:8081"
 }
 
-# SSH connection strings (using .pem key file)
-output "bastion_ssh_command" {
-  description = "SSH command to connect to bastion host"
-  value       = "ssh -i ${var.private_key_path} ec2-user@${aws_instance.bastion.public_ip}"
+# SSH connection information
+output "ssh_connection_info" {
+  description = "SSH connection commands and setup instructions"
+  value = {
+    # Direct bastion connection
+    bastion_ssh = "ssh -i ${var.private_key_path} ec2-user@${aws_instance.bastion.public_ip}"
+    
+    # ProxyJump commands for private instances
+    frontend_ssh = "ssh -i ${var.private_key_path} -J ec2-user@${aws_instance.bastion.public_ip} ec2-user@${aws_instance.frontend.private_ip}"
+    backend_ssh  = "ssh -i ${var.private_key_path} -J ec2-user@${aws_instance.bastion.public_ip} ec2-user@${aws_instance.backend.private_ip}"
+    database_ssh = "ssh -i ${var.private_key_path} -J ec2-user@${aws_instance.bastion.public_ip} ec2-user@${aws_instance.database.private_ip}"
+    
+    # Alternative: Two-step SSH
+    step1 = "ssh -i ${var.private_key_path} ec2-user@${aws_instance.bastion.public_ip}"
+    step2_frontend = "ssh ec2-user@${aws_instance.frontend.private_ip}"
+    step2_backend  = "ssh ec2-user@${aws_instance.backend.private_ip}"
+    step2_database = "ssh ec2-user@${aws_instance.database.private_ip}"
+  }
 }
 
-output "frontend_ssh_command" {
-  description = "SSH command to connect to frontend via bastion"
-  value       = "ssh -i ${var.private_key_path} -J ec2-user@${aws_instance.bastion.public_ip} ec2-user@${aws_instance.frontend.private_ip}"
+# SSH Config for easy management
+output "ssh_config_snippet" {
+  description = "SSH config snippet to add to ~/.ssh/config"
+  value = <<-EOF
+# Voting App Infrastructure SSH Config
+Host voting-bastion
+    HostName ${aws_instance.bastion.public_ip}
+    User ec2-user
+    IdentityFile ${var.private_key_path}
+    ServerAliveInterval 30
+    
+Host voting-frontend
+    HostName ${aws_instance.frontend.private_ip}
+    User ec2-user
+    IdentityFile ${var.private_key_path}
+    ProxyJump voting-bastion
+    
+Host voting-backend
+    HostName ${aws_instance.backend.private_ip}
+    User ec2-user
+    IdentityFile ${var.private_key_path}
+    ProxyJump voting-bastion
+    
+Host voting-database
+    HostName ${aws_instance.database.private_ip}
+    User ec2-user
+    IdentityFile ${var.private_key_path}
+    ProxyJump voting-bastion
+EOF
 }
 
-output "backend_ssh_command" {
-  description = "SSH command to connect to backend via bastion"
-  value       = "ssh -i ${var.private_key_path} -J ec2-user@${aws_instance.bastion.public_ip} ec2-user@${aws_instance.backend.private_ip}"
-}
+# Ansible inventory format
+output "ansible_inventory" {
+  description = "Ansible inventory snippet"
+  value = <<-EOF
+[bastion]
+voting-bastion ansible_host=${aws_instance.bastion.public_ip} ansible_user=ec2-user ansible_ssh_private_key_file=${var.private_key_path}
 
-output "database_ssh_command" {
-  description = "SSH command to connect to database via bastion"
-  value       = "ssh -i ${var.private_key_path} -J ec2-user@${aws_instance.bastion.public_ip} ec2-user@${aws_instance.database.private_ip}"
-}
+[frontend]
+voting-frontend ansible_host=${aws_instance.frontend.private_ip} ansible_user=ec2-user ansible_ssh_private_key_file=${var.private_key_path} ansible_ssh_common_args='-o ProxyJump=ec2-user@${aws_instance.bastion.public_ip}'
 
-# volume information to outputs
-output "postgres_volume_id" {
-  description = "ID of the PostgreSQL data volume"
-  value       = aws_ebs_volume.postgres_data.id
-}
+[backend]
+voting-backend ansible_host=${aws_instance.backend.private_ip} ansible_user=ec2-user ansible_ssh_private_key_file=${var.private_key_path} ansible_ssh_common_args='-o ProxyJump=ec2-user@${aws_instance.bastion.public_ip}'
 
-output "postgres_volume_device" {
-  description = "Device name for PostgreSQL volume"
-  value       = aws_volume_attachment.postgres_attachment.device_name
+[database]
+voting-database ansible_host=${aws_instance.database.private_ip} ansible_user=ec2-user ansible_ssh_private_key_file=${var.private_key_path} ansible_ssh_common_args='-o ProxyJump=ec2-user@${aws_instance.bastion.public_ip}'
+
+[all:vars]
+ansible_ssh_extra_args=-o StrictHostKeyChecking=no
+EOF
 }
