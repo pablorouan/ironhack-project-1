@@ -66,6 +66,28 @@ resource "aws_instance" "database" {
   }
 }
 
+# EBS Volume for PostgreSQL Data Persistence
+resource "aws_ebs_volume" "postgres_data" {
+  availability_zone = aws_instance.database.availability_zone
+  size             = 20
+  type             = "gp3"
+  encrypted        = true
+
+  tags = {
+    Name        = "postgres-data-volume"
+    Environment = var.environment
+    Project     = "voting-app"
+    Purpose     = "PostgreSQL Data Storage"
+  }
+}
+
+# Attach the volume to the database instance
+resource "aws_volume_attachment" "postgres_attachment" {
+  device_name = "/dev/sdf"
+  volume_id   = aws_ebs_volume.postgres_data.id
+  instance_id = aws_instance.database.id
+}
+
 # Bastion Host - Public Subnet
 resource "aws_instance" "bastion" {
   ami                         = "ami-0ae2c887094315bed"

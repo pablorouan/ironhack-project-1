@@ -101,3 +101,14 @@ output "database_ssh_command" {
   description = "SSH command to connect to database via bastion"
   value       = "ssh -i ${var.private_key_path} -J ec2-user@${aws_instance.bastion.public_ip} ec2-user@${aws_instance.database.private_ip}"
 }
+
+# volume information to outputs
+output "postgres_volume_id" {
+  description = "ID of the PostgreSQL data volume"
+  value       = aws_ebs_volume.postgres_data.id
+}
+
+output "postgres_volume_device" {
+  description = "Device name for PostgreSQL volume"
+  value       = aws_volume_attachment.postgres_attachment.device_name
+}
