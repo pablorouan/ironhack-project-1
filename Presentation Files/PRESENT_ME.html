@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cats vs Dogs: A DevOps Journey</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            line-height: 1.6;
+        }
+        
+        .slide {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255,255,255,0.18);
+        }
+        
+        .slide.active { display: block; }
+        
+        h1 { 
+            font-size: 2.5rem; 
+            text-align: center; 
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        h2 { 
+            font-size: 2rem; 
+            color: #ffd700; 
+            margin-bottom: 25px;
+        }
+        
+        h3 { 
+            font-size: 1.4rem; 
+            color: #87ceeb; 
+            margin-bottom: 20px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .highlight {
+            background: rgba(255,215,0,0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .challenge {
+            background: rgba(255,82,82,0.2);
+            padding: 15px;
+            border-left: 4px solid #ff5252;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .solution {
+            background: rgba(76,175,80,0.2);
+            padding: 15px;
+            border-left: 4px solid #4caf50;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .quote {
+            font-style: italic;
+            text-align: center;
+            font-size: 1.1rem;
+            margin: 25px 0;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+        }
+        
+        .tech-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .tech-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .screenshot-note {
+            background: rgba(255,255,255,0.15);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin: 10px 0;
+            border-left: 3px solid #ffd700;
+        }
+        
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        ul { text-align: left; }
+        li { margin: 8px 0; }
+        
+        .center { text-align: center; }
+        .demo-url { 
+            font-size: 1.3rem; 
+            color: #ffd700; 
+            font-weight: bold; 
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="slideNumber">1</span> / <span id="totalSlides">13</span>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active">
+        <h1>🐱 Cats vs Dogs 🐶</h1>
+        <h2 class="center">A Multi-Microservices Voting Application</h2>
+        <div class="subtitle">From Local Development Hell to Production Glory</div>
+        <div class="center">
+            <h3>Pablo Rouan</h3>
+            <p>Ironhack DevOps Bootcamp</p>
+            <p class="demo-url">Live Demo: pablorouan.com/vote</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Project Overview -->
+    <div class="slide">
+        <h2>🎯 The Mission</h2>
+        <h3>Build a fully functional Voting Application</h3>
+        <ul>
+            <li><strong> 🏢 Multi-tier architecture:</strong> Frontend, Backend, Database layers + Bastion Host</li>
+            <li><strong> 🐳 Containerization:</strong> Docker for all services</li>
+            <li><strong> ☁️ Cloud Infrastructure:</strong> AWS with proper security and networking</li>
+            <li><strong> 🏗️ Infrastructure as Code:</strong> Terraform for reproducible deployments</li>
+            <li><strong> 🦾 Automation:</strong> Ansible for configuration management</li>
+            <li><strong> 👨🏻‍💻 Professional Add-Ons:</strong> I decided to go for: Custom domain + SSL + monitoring</li>
+        </ul>
+        
+        <div class="quote">
+            "How hard could it be? It's just a simple voting app!"<br>
+            <em>— Me, before this</em>
+        </div>
+    </div>
+
+    <!-- Slide 3: Architecture -->
+    <div class="slide">
+        <h2>🏗️ The Architecture</h2>
+        <h3>Classic 3-Tier Design</h3>
+        
+        <div class="tech-list">
+            <div class="tech-item">
+                <h4>🌐 Frontend Tier</h4>
+                <p><strong>Vote App:</strong> Python/Flask</p>
+                <p><strong>Result App:</strong> Node.js/Express</p>
+                <p>Public subnet with internet access</p>
+            </div>
+            <div class="tech-item">
+                <h4>⚙️ Backend Tier</h4>
+                <p><strong>Redis:</strong> In-memory queue</p>
+                <p><strong>Worker:</strong> .NET Core processor</p>
+                <p>Private subnet, no internet</p>
+            </div>
+            <div class="tech-item">
+                <h4>🗄️ Database Tier</h4>
+                <p><strong>PostgreSQL:</strong> Persistent storage</p>
+                <p>Private subnet, highly secured</p>
+            </div>
+        </div>
+
+        <div class="center">
+            <p><strong>Data Flow:</strong> Vote → Redis → Worker → PostgreSQL → Result</p>
+        </div>
+    </div>
+
+    <!-- Slide 4: Local Development Journey -->
+    <div class="slide">
+        <h2>🔥 Chapter 1: Local Development Hell</h2>
+        <h3>At first I was mastering the art of "Rollback". Big feeling of being wat behind</h3>
+        
+        <div class="challenge">
+            <strong>🚫 Not The Star Wars ... The Port Wars</strong><br>
+            Every time I wanted to relaunch Node.js or .NET, ports were occupied. Zombie processes everywhere. 
+        </div>
+        
+        <div class="solution">
+            <strong>💀 Battle-tested solution:</strong><br>
+            First, mastered <code>sudo lsof -i :####</code> and <code>sudo kill -9 #PID</code><br>
+            Then, got me Got a "start" and a "stop" scripts to run locally.
+        </div>
+        
+        <div class="challenge">
+            <strong>🗄️ Database Connection Mystery</strong><br>
+            Understanding the logic behind databases equals to way deep. Having them run each time is an ordeal
+        </div>
+        
+        <div class="solution">
+            <strong>🔧 Environment Variables 😍:</strong><br>
+            Learned that exports allow configuration without code changes.<br>
+            Yesss.. they die with the terminal — but you gotta love those "-e" life savers!
+        </div>
+
+        <div class="screenshot-note">
+            <strong>Screenshot 1:</strong> You can see the app running locally with the terminals in VsCode
+        </div>
+    </div>
+
+    <!-- Slide 5: Docker Success -->
+    <div class="slide">
+        <h2>🐳 Chapter 2-3: Docker Victory</h2>
+        
+        <div class="solution">
+            <strong>🍎 Part 2: Mac Compatibility</strong><br>
+            Easy peasy, just run the buildx command inside each directory.<br>
+            Multi-architecture builds for ARM64 and AMD64.
+        </div>
+
+        <div class="solution">
+            <strong>🚀 Part 3: Compose Magic</strong><br>
+            Rewrote docker-compose.yml to use my custom images.<br>
+            At this point i was surprised about not having encountered any issues so far. Spoiler alert: It will happen soon.
+        </div>
+
+        <div class="quote">
+            FINALLY the App is "dockerized"<br>
+            <em>— Being able to run and stop the containers from Docker Desktop felt amaizing each time!</em>
+        </div>
+
+        <div class="screenshot-note">
+            <strong>Screenshot 2:</strong> VS Code setup with containers, and the app running with container ID.
+        </div>
+    </div>
+
+    <!-- Slide 6: Terraform Infrastructure -->
+    <div class="slide">
+        <h2>☁️ Chapter 4: Infrastructure as Code</h2>
+        
+        <div class="solution">
+            <strong>🏗️ Backend Setup First</strong><br>
+            S3 bucket + DynamoDB for remote state management.<br>
+            Professional approach: always secure your state files. (Is gitignore enough?)
+        </div>
+
+        <div class="challenge">
+            <strong>😱 The Git Disaster</strong><br>
+            Using GIT was also a challange. Clearly I've forgotten some of the basics.<br>
+            When I got the "Exceeded file size" error, somehow I took a wrong turn and ... accidentally deleted part of my work!<br>
+            <em>Where are my fileeeees?!</em> <br>Cried a little bit, then started from "git clone" again<br>
+        </div>
+
+        <div class="solution">
+            <strong>📁 The .gitignore Salvation</strong><br>
+            Created proper .gitignore to exclude heavy Terraform provider files.<br>
+            Kept .tf files clean for others to fork the repository.
+            My previous error gave me a chance to organize my directory! (Opotun-Crisis)
+        </div>
+
+        <div class="screenshot-note">
+            <strong>Screenshots 3-4:</strong> Git Error, Terraform final success
+        </div>
+    </div>
+
+    <!-- Slide 7: Ansible Adventures -->
+    <div class="slide">
+        <h2>🤖 Chapter 5: Ansible Configuration</h2>
+        
+        <div class="challenge">
+            <strong>🐍 The Python Incompatibility Crisis</strong><br>
+            Have you ever dreamt about automatic updates? Me too.<br>
+            Amazon Linux instances had the wrong Python version. After going crazy to update them...
+        </div>
+
+        <div class="challenge">
+            <strong>🎯 The AMI Plot Twist</strong><br>
+            I discovered I was running an older Amazon Linux 2 instead of Amazon Linux 2023.<br>
+            Result: dnf vs yum compatibility chaos! I solved 1 task error, 20 more appeared under the hood. Time to... Rollback!
+        </div>
+
+        <div class="solution">
+            <strong>📚 Critical Lesson Learned:</strong><br>
+            <span class="highlight">Always check and set your AMI ID yourself!</span><br>
+            Don't blindly trust AI suggestions for infrastructure choices. Also, human reasoning is still something 😂
+        </div>
+
+        <div class="solution">
+            <strong>🎉 Final Victory</strong><br>
+            I took down my instances and set new ones with a specific AMI ID. Now All services deployed successfully across three tiers.<br>
+            SSH jump host configuration working perfectly. 👌🏼
+        </div>
+
+        <div class="screenshot-note">
+            <strong>Screenshots 5, 6:</strong> Ansible provisioning process and the beautiful final deployment 💅🏽
+        </div>
+    </div>
+
+    <!-- Slide 8: Professional Add-ons -->
+    <div class="slide">
+        <h2>✨ Chapter 6: Going Professional</h2>
+        
+        <div class="challenge">
+            <strong>💾 The PostgreSQL Volume Disaster</strong><br>
+            Tried to add persistent volumes... broke everything.<br>
+            My votes stopped being registered somehow.
+        </div>
+
+        <div class="solution">
+            <strong>💰 Strategic Investment</strong><br>
+            At this point I surrendered to pay for AI. I needed the support<br>
+            <em>The complexity of errors and logs exceeds my non-it background. In any case, the solution was: Rollback 🔙</em>
+        </div>
+
+        <div class="solution">
+            <strong>🌐 Custom Domain + SSL</strong><br>
+            Application Load Balancer with Route 53 DNS.<br>
+            Not part of the Project but: provides Clean URLs, and leaves me halfway there with the ALB Add-On task
+        </div>
+
+        <div class="solution">
+            <strong>📊 CloudWatch Monitoring</strong><br>
+            A last minute Add-On with no risk of breaking things<br>
+            A business-appreciated monitoring tool, sends an alert if the CPU is under stress.
+        </div>
+
+        <div class="screenshot-note">
+            <strong>Screenshots 7, 8:</strong> Route 53 configuration and CloudWatch alarm triggering 
+        </div>
+    </div>
+
+    <!-- Slide 9: Technology Stack -->
+    <div class="slide">
+        <h2>🛠️ The Technology Arsenal</h2>
+        
+        <div class="tech-list">
+            <div class="tech-item">
+                <h4>🐳 Containerization</h4>
+                <p>Docker, Docker Compose</p>
+                <p>Multi-arch builds (ARM64/AMD64)</p>
+            </div>
+            <div class="tech-item">
+                <h4>☁️ Cloud Infrastructure</h4>
+                <p>AWS VPC, EC2, Security Groups</p>
+                <p>Application Load Balancer</p>
+            </div>
+            <div class="tech-item">
+                <h4>🏗️ Infrastructure as Code</h4>
+                <p>Terraform with remote state</p>
+                <p>S3 + DynamoDB state locking</p>
+            </div>
+            <div class="tech-item">
+                <h4>🤖 Configuration Management</h4>
+                <p>Ansible playbooks + scripts</p>
+                <p>SSH jump host setup</p>
+            </div>
+            <div class="tech-item">
+                <h4>🌐 Networking & DNS</h4>
+                <p>Route 53 DNS management</p>
+                <p>SSL/TLS certificates (ACM)</p>
+            </div>
+            <div class="tech-item">
+                <h4>📊 Monitoring</h4>
+                <p>CloudWatch logs & metrics</p>
+                <p>Email alerting (SNS)</p>
+            </div>
+        </div>
+    </div>
+
+<!-- Slide 10: Biggest Challenge -->
+    <div class="slide">
+        <h2>💀 The Biggest Challenge</h2>
+        <h3>Knowing When to Stop giving CPR</h3>
+        
+        <div class="challenge">
+            <strong>😱 The PostgreSQL Volume Attempt</strong><br>
+            Had a perfectly working application.<br>
+            Decided to add persistent volumes for the database.<br>
+            Broke the result mechanism mysteriously. Then broke everything else trying to solve it.
+        </div>
+        
+        <div class="solution">
+            <strong>🎓 Critical Lessons Learned:</strong>
+            <ul>
+                <li><span class="highlight">Don't break what isn't broken, trying to fix the un-fixable!</span></li>
+                <li>Test infrastructure changes one by one</li>
+                <li>Keep working backups of everything</li>
+                <li>Last minute add-ons and developments are a big No-No</li>
+                <li>Focus on core requirements before adding extras</li>
+            </ul>
+        </div>
+
+        <div class="solution">
+            <strong>🔄 What I'd Do Differently:</strong><br>
+            Implement changes incrementally<br>
+            Use Git feature branches properly
+            Activities and development take time. Can't be rushed! 
+        </div>
+    </div>
+
+    <!-- Slide 11: Results & Impact -->
+    <div class="slide">
+        <h2>🏆 Mission Accomplished</h2>
+        
+        <div class="center">
+            <h3>✅ Production-Ready Application</h3>
+            <p class="demo-url">pablorouan.com/vote</p>
+            <p class="demo-url">pablorouan.com/result</p>
+        </div>
+
+        <div class="tech-list">
+            <div class="tech-item">
+                <h4>🎯 Technical Success</h4>
+                <p>3-tier architecture deployed</p>
+                <p>SSL-secured + custom domain</p>
+                <p>Professional monitoring</p>
+            </div>
+            <div class="tech-item">
+                <h4>🚀 Real-World Impact</h4>
+                <p>Shared with family and friends to cast real votes</p>
+                <p>"Spiced up debate around cats and dogs 😂"</p>
+                <p>Added some old "electronic vote Fraud" with Mass-Voting from Terminal!</p>
+            </div>
+        </div>
+
+        <div class="quote">
+            "Should we make it a more complex submittable vote that limits multiple casting of votes next time?"<br>
+            <em>— Already thinking about v2.0!</em>
+        </div>
+    </div>
+
+        <!-- Slide 12: Live Demo -->
+    <div class="slide">
+        <h2>🎬 Live Demo Time</h2>
+        <h3 class="center">Let's See This Thing Work!</h3>
+        
+        <div class="solution">
+            <strong>🗳️ Voting Interface:</strong> pablorouan.com/vote<br>
+            Real-time voting with instant feedback
+        </div>
+
+        <div class="solution">
+            <strong>📊 Results Dashboard:</strong> pablorouan.com/result<br>
+            Live updates as votes come in
+        </div>
+
+        <div class="solution">
+            <strong>🚨 Monitoring in Action:</strong><br>
+            CPU stress test triggering CloudWatch alarms<br>
+            Real email notifications
+        </div>
+
+        <div class="solution">
+            <strong>🐱 Mass Voting via Terminal:</strong><br>
+            <code>for i in {1..60}; do curl -X POST https://pablorouan.com/vote -H "Content-Type: application/x-www-form-urlencoded" -d "vote=a" -s; done</code><br>
+            <em>60 votes for cats in seconds!</em>
+        </div>
+
+        <div class="center">
+            <p><strong>Ready to cast some votes and trigger some alarms? 🎯</strong></p>
+        </div>
+    </div>
+
+    <!-- Slide 13: Thank You -->
+    <div class="slide">
+        <h1 class="center">🙏 Thank You!</h1>
+        
+        <div class="center">
+            <h2>🐱 Cats vs Dogs 🐶</h2>
+            <h3>Multi-Microservices Voting Application</h3>
+            <p><strong>Pablo Rouan</strong></p>
+            <p>Ironhack DevOps Bootcamp</p>
+            <br>
+            <p class="demo-url">pablorouan.com/vote</p>
+            <p class="demo-url">pablorouan.com/result</p>
+        </div>
+
+        <div class="quote">
+            "I've been sitting on this chair —<br>
+            for almost 4 continuous days,<br>
+            every error made me stronger... and closer to look like Daniel."
+        </div>
+
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="prevSlide()">← Previous</button>
+        <button class="nav-btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('slideNumber').textContent = currentSlide + 1;
+        }
+
+        function nextSlide() {
+            showSlide((currentSlide + 1) % totalSlides);
+        }
+
+        function prevSlide() {
+            showSlide((currentSlide - 1 + totalSlides) % totalSlides);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

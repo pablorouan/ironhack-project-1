@@ -187,3 +187,26 @@ resource "aws_route_table_association" "private_database_rta" {
   subnet_id      = aws_subnet.private_subnet_database.id
   route_table_id = aws_route_table.private_rt.id
 }
+
+# Add to main.tf - Second AZ for ALB requirement
+
+# Create Second Public Subnet in different AZ
+resource "aws_subnet" "public_subnet_2" {
+  vpc_id                  = aws_vpc.voting_app_vpc.id
+  cidr_block              = "10.0.4.0/24"  # New CIDR block
+  availability_zone       = data.aws_availability_zones.available.names[1]  # Second AZ
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name        = "voting-app-public-subnet-2"
+    Environment = var.environment
+    Project     = "voting-app"
+    Type        = "Public"
+  }
+}
+
+# Associate Route Table with Second Public Subnet
+resource "aws_route_table_association" "public_rta_2" {
+  subnet_id      = aws_subnet.public_subnet_2.id
+  route_table_id = aws_route_table.public_rt.id
+  }

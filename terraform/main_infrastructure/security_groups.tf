@@ -181,3 +181,26 @@ resource "aws_security_group" "database_sg" {
     Project     = "voting-app"
   }
 }
+
+# Add to security_groups.tf - Frontend SG updates
+
+# Add this ingress rule to the existing frontend security group
+resource "aws_security_group_rule" "frontend_from_alb_8080" {
+  type                     = "ingress"
+  from_port                = 8080
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.alb_sg.id
+  security_group_id        = aws_security_group.frontend_sg.id
+  description              = "Vote app from ALB"
+}
+
+resource "aws_security_group_rule" "frontend_from_alb_8081" {
+  type                     = "ingress"
+  from_port                = 8081
+  to_port                  = 8081
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.alb_sg.id
+  security_group_id        = aws_security_group.frontend_sg.id
+  description              = "Result app from ALB"
+  }

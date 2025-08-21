@@ -73,3 +73,16 @@ variable "your_ip_cidr" {
   # You need to set this to your actual public IP, e.g., "203.0.113.12/32"
   # You can find your IP with: curl ifconfig.me
 }
+# Add to variables.tf
+
+variable "domain_name" {
+  description = "Domain name for the application"
+  type        = string
+  default     = "pablorouan.com"
+}
+
+variable "create_alb" {
+  description = "Whether to create ALB and Route 53 records"
+  type        = bool
+  default     = true
+}
