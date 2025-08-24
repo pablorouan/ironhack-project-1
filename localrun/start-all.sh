@@ -1,3 +1,5 @@
+# RUN ./localrun/start-all.sh FROM PROJECT ROOT TO START ALL SERVICES
+
 #!/usr/bin/env bash
 set -Eeuo pipefail
 

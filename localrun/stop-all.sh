@@ -1,3 +1,5 @@
+# RUN ./localrun/stop-all.sh FROM PROJECT ROOT TO STOP ALL SERVICES
+
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
